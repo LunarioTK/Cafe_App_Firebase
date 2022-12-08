@@ -19,6 +19,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StreamProvider<UserModels?>.value(
+      catchError: (context, error) => null,
       value: AuthService().user,
       initialData: null,
       child: const MaterialApp(
