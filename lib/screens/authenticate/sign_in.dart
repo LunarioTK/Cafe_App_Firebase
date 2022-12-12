@@ -2,7 +2,8 @@ import 'package:brew_crew/services/auth.dart';
 import 'package:flutter/material.dart';
 
 class SignIn extends StatefulWidget {
-  const SignIn({super.key});
+  final Function toggleView;
+  const SignIn({super.key, required this.toggleView});
 
   @override
   State<SignIn> createState() => _SignInState();
@@ -10,10 +11,12 @@ class SignIn extends StatefulWidget {
 
 class _SignInState extends State<SignIn> {
   final AuthService _auth = AuthService();
+  final _formKey = GlobalKey<FormState>();
 
   // text field state
   String email = '';
   String password = '';
+  String error = '';
 
   @override
   Widget build(BuildContext context) {
@@ -23,14 +26,43 @@ class _SignInState extends State<SignIn> {
         backgroundColor: Colors.brown[400],
         elevation: 0.0,
         title: const Text('Sign in to Brew Crew'),
+        actions: [
+          TextButton.icon(
+            onPressed: (() => widget.toggleView()),
+            style: ButtonStyle(
+              foregroundColor: MaterialStateProperty.all(Colors.white),
+            ),
+            icon: const Icon(Icons.person),
+            label: const Text('Register'),
+          )
+        ],
       ),
       body: Container(
           padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 50),
           child: Form(
+            key: _formKey,
             child: Column(
               children: [
                 const SizedBox(height: 20),
                 TextFormField(
+                  decoration: const InputDecoration(
+                    hintText: 'Email',
+                    fillColor: Colors.white,
+                    filled: true,
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Colors.white,
+                        width: 2.0,
+                      ),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Colors.green,
+                        width: 2.0,
+                      ),
+                    ),
+                  ),
+                  validator: (val) => val!.isEmpty ? 'Enter an email' : null,
                   onChanged: (val) {
                     setState(() {
                       email = val;
@@ -39,6 +71,25 @@ class _SignInState extends State<SignIn> {
                 ),
                 const SizedBox(height: 20),
                 TextFormField(
+                  decoration: const InputDecoration(
+                    hintText: 'Password',
+                    fillColor: Colors.white,
+                    filled: true,
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Colors.white,
+                        width: 2.0,
+                      ),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Colors.green,
+                        width: 2.0,
+                      ),
+                    ),
+                  ),
+                  validator: (val) =>
+                      val!.length < 6 ? 'Enter a longer password' : null,
                   obscureText: true,
                   onChanged: (val) {
                     setState(() {
@@ -49,18 +100,34 @@ class _SignInState extends State<SignIn> {
                 const SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: () async {
-                    print(email);
-                    print(password);
+                    if (_formKey.currentState!.validate()) {
+                      dynamic result = await _auth.signInWithEmailAndPassword(
+                          email, password);
+                      if (result == null) {
+                        setState(() {
+                          error = 'could not sign in with those credentials';
+                        });
+                      }
+                    }
                   },
                   style: ButtonStyle(
                       backgroundColor: MaterialStateProperty.all(
-                    Colors.pink[400],
+                    Colors.green[400],
                   )),
                   child: const Text(
                     'Sign in',
                     style: TextStyle(
                       color: Colors.white,
                     ),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  error,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    color: Colors.red,
+                    fontSize: 14.0,
                   ),
                 )
               ],
