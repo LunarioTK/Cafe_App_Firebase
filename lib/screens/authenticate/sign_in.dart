@@ -1,4 +1,5 @@
 import 'package:brew_crew/services/auth.dart';
+import 'package:brew_crew/shared/constants.dart';
 import 'package:flutter/material.dart';
 
 class SignIn extends StatefulWidget {
@@ -45,23 +46,7 @@ class _SignInState extends State<SignIn> {
               children: [
                 const SizedBox(height: 20),
                 TextFormField(
-                  decoration: const InputDecoration(
-                    hintText: 'Email',
-                    fillColor: Colors.white,
-                    filled: true,
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Colors.white,
-                        width: 2.0,
-                      ),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Colors.green,
-                        width: 2.0,
-                      ),
-                    ),
-                  ),
+                  decoration: textInputDecoration.copyWith(hintText: 'Email'),
                   validator: (val) => val!.isEmpty ? 'Enter an email' : null,
                   onChanged: (val) {
                     setState(() {
@@ -71,23 +56,8 @@ class _SignInState extends State<SignIn> {
                 ),
                 const SizedBox(height: 20),
                 TextFormField(
-                  decoration: const InputDecoration(
-                    hintText: 'Password',
-                    fillColor: Colors.white,
-                    filled: true,
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Colors.white,
-                        width: 2.0,
-                      ),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Colors.green,
-                        width: 2.0,
-                      ),
-                    ),
-                  ),
+                  decoration:
+                      textInputDecoration.copyWith(hintText: 'Password'),
                   validator: (val) =>
                       val!.length < 6 ? 'Enter a longer password' : null,
                   obscureText: true,
