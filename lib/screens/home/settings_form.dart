@@ -17,7 +17,7 @@ class _SettingsFormState extends State<SettingsForm> {
   final List<String> sugars = ['0', '1', '2', '3', '4'];
 
   // form values
-  String _currentName = '';
+  String? _currentName;
   String? _currentSugars;
   int? _currentStrength;
 
@@ -73,9 +73,14 @@ class _SettingsFormState extends State<SettingsForm> {
                           setState(() => _currentStrength = val.round())),
                   ElevatedButton(
                     onPressed: (() async {
-                      print(_currentName);
-                      print(_currentSugars);
-                      print(_currentStrength);
+                      if (_formKey.currentState!.validate()) {
+                        await DatabaseService(uid: user.uid).updateUserData(
+                          _currentSugars ?? userData.sugars,
+                          _currentName ?? userData.name,
+                          _currentStrength ?? userData.strength,
+                        );
+                        Navigator.pop(context);
+                      }
                     }),
                     style: const ButtonStyle(
                       backgroundColor: MaterialStatePropertyAll(Colors.green),
